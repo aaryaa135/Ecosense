@@ -2,15 +2,17 @@
 
 import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
-import { Wind, Menu, X } from "lucide-react"
+import { Wind, Menu, X, User } from "lucide-react"
 import Link from "next/link"
 import { useRouter, usePathname } from "next/navigation"
+import { useAuth } from "@/lib/auth-context"
 
 export function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const router = useRouter()
   const pathname = usePathname()
+  const { user, signOut } = useAuth()
 
   useEffect(() => {
     const handleScroll = () => {
@@ -43,6 +45,16 @@ export function Navbar() {
       router.push("/")
     } else {
       scrollToSection("home")
+    }
+    setIsMobileMenuOpen(false)
+  }
+
+  const handleAuthAction = () => {
+    if (user) {
+      signOut()
+      router.push("/")
+    } else {
+      router.push("/auth")
     }
     setIsMobileMenuOpen(false)
   }
@@ -89,10 +101,12 @@ export function Navbar() {
               Contact Us
             </button>
             <Link href="/order">
-              <Button size="sm" className="ml-4">
-                Order Now
-              </Button>
+              <Button size="sm">Order Now</Button>
             </Link>
+            <Button size="sm" variant="outline" onClick={handleAuthAction}>
+              <User className="h-4 w-4 mr-2" />
+              {user ? "Sign Out" : "Sign Up"}
+            </Button>
           </div>
 
           {/* Mobile Menu Button */}
@@ -132,9 +146,13 @@ export function Navbar() {
               >
                 Contact Us
               </button>
-              <Link href="/order">
+              <Link href="/order" onClick={() => setIsMobileMenuOpen(false)}>
                 <Button className="w-full">Order Now</Button>
               </Link>
+              <Button variant="outline" className="w-full bg-transparent" onClick={handleAuthAction}>
+                <User className="h-4 w-4 mr-2" />
+                {user ? "Sign Out" : "Sign Up"}
+              </Button>
             </div>
           </div>
         )}

@@ -5,16 +5,21 @@ import type React from "react"
 import { useState } from "react"
 import { Navbar } from "@/components/navbar"
 import { Footer } from "@/components/footer"
+import { OrderHistory } from "@/components/order-history"
 import { Card } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Check, Wind } from "lucide-react"
 import Link from "next/link"
+import { useAuth } from "@/lib/auth-context"
+import { useRouter } from "next/navigation"
 
 export default function OrderPage() {
+  const { user, addOrder } = useAuth()
+  const router = useRouter()
   const [formData, setFormData] = useState({
-    name: "",
-    email: "",
+    name: user?.name || "",
+    email: user?.email || "",
     phone: "",
     address: "",
     quantity: 1,
@@ -28,6 +33,20 @@ export default function OrderPage() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
+
+    if (!user) {
+      router.push("/auth")
+      return
+    }
+
+    addOrder({
+      name: formData.name,
+      phone: formData.phone,
+      email: formData.email,
+      quantity: formData.quantity,
+      total: totalPrice,
+    })
+
     setOrderPlaced(true)
   }
 
@@ -48,11 +67,16 @@ export default function OrderPage() {
               You will receive a confirmation email at <span className="font-medium break-words">{formData.email}</span>{" "}
               with tracking details once your order ships.
             </p>
-            <Link href="/">
-              <Button size="lg" className="mt-4 w-full sm:w-auto">
-                Return to Home
+            <div className="flex flex-col sm:flex-row gap-3 justify-center">
+              <Link href="/">
+                <Button size="lg" className="w-full sm:w-auto">
+                  Return to Home
+                </Button>
+              </Link>
+              <Button size="lg" variant="outline" onClick={() => setOrderPlaced(false)} className="w-full sm:w-auto">
+                View Order History
               </Button>
-            </Link>
+            </div>
           </Card>
         </main>
         <Footer />
@@ -67,13 +91,21 @@ export default function OrderPage() {
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-8 sm:mb-12">
             <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-3 sm:mb-4">Order Your ECOSENSE</h1>
-            <p className="text-base sm:text-lg text-muted-foreground">Fill in your details to complete your purchase</p>
+            <p className="text-base sm:text-lg text-muted-foreground">
+              {user ? `Welcome back, ${user.name}!` : "Sign in to track your orders"}
+            </p>
           </div>
+
+          {user && (
+            <div className="mb-8 sm:mb-12">
+              <OrderHistory />
+            </div>
+          )}
 
           <div className="grid lg:grid-cols-2 gap-6 sm:gap-8">
             {/* Order Form */}
-            <Card className="p-8">
-              <h2 className="text-2xl font-bold mb-6">Your Information</h2>
+            <Card className="p-6 sm:p-8">
+              <h2 className="text-xl sm:text-2xl font-bold mb-6">Your Information</h2>
               <form onSubmit={handleSubmit} className="space-y-6">
                 <div>
                   <label htmlFor="name" className="block text-sm font-medium mb-2">
@@ -186,15 +218,15 @@ export default function OrderPage() {
                 </div>
 
                 <Button type="submit" size="lg" className="w-full">
-                  Place Order - ${totalPrice}
+                  {user ? `Place Order - $${totalPrice}` : "Sign In to Place Order"}
                 </Button>
               </form>
             </Card>
 
             {/* Order Summary */}
             <div className="space-y-6">
-              <Card className="p-8">
-                <h2 className="text-2xl font-bold mb-6">Order Summary</h2>
+              <Card className="p-6 sm:p-8">
+                <h2 className="text-xl sm:text-2xl font-bold mb-6">Order Summary</h2>
                 <div className="space-y-4">
                   <div className="flex items-center gap-4 pb-4 border-b">
                     <div className="w-20 h-20 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
