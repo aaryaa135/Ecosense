@@ -105,7 +105,7 @@ export function Contact() {
                 <div>
                   <h3 className="font-semibold text-base sm:text-lg mb-1">Phone</h3>
                   <p className="text-sm text-muted-foreground">+1 (555) 123-4567</p>
-                  <p className="text-xs sm:text-sm text-muted-foreground">Mon-Fri 9am-6pm EST</p>
+                  <p className="text-xs sm:text-sm text-muted-foreground">Mon-Fri 9am-5pm IST</p>
                 </div>
               </div>
             </Card>
@@ -117,8 +117,8 @@ export function Contact() {
                 </div>
                 <div>
                   <h3 className="font-semibold text-base sm:text-lg mb-1">Address</h3>
-                  <p className="text-sm text-muted-foreground">123 Innovation Drive</p>
-                  <p className="text-sm text-muted-foreground">San Francisco, CA 94105</p>
+                  <p className="text-sm text-muted-foreground">Jaypee University of Information Technology</p>
+                  <p className="text-sm text-muted-foreground">Waknaghta, Solan(HP), 173234</p>
                 </div>
               </div>
             </Card>
