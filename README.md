@@ -23,7 +23,7 @@ This website is built with modern web technologies:
 - **Icons**: Lucide React
 - **Deployment**: Vercel
 
-## Getting Started
+## Getting Started -
 
 ### Prerequisites
 
